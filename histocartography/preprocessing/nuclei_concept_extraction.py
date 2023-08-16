@@ -3,7 +3,7 @@
 import numpy as np
 import torch
 
-from ..pipeline import PipelineStep
+from pipeline import PipelineStep
 from .feature_extraction import HANDCRAFTED_FEATURES_NAMES, HandcraftedFeatureExtractor
 
 

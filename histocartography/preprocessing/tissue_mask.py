@@ -1,4 +1,4 @@
-from ..pipeline import PipelineStep
+from pipeline import PipelineStep
 import logging
 import math
 from pathlib import Path

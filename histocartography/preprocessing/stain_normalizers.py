@@ -11,7 +11,7 @@ from PIL import Image
 from skimage.color import rgb2lab
 from sklearn.decomposition import DictionaryLearning
 
-from ..pipeline import PipelineStep
+from pipeline import PipelineStep
 from .utils import load_image
 
 

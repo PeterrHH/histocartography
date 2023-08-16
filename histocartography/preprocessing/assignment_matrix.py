@@ -5,7 +5,7 @@ from pathlib import Path
 import pandas as pd
 
 import numpy as np
-from ..pipeline import PipelineStep
+from pipeline import PipelineStep
 
 
 class AssignmnentMatrixBuilder(PipelineStep):

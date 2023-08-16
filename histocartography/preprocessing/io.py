@@ -6,9 +6,9 @@ import dgl
 import numpy as np
 from dgl.data.utils import load_graphs
 
-from ..pipeline import PipelineStep
-from .utils import load_image
-from ..utils.io import h5_to_numpy 
+from pipeline import PipelineStep
+from preprocessing.utils import load_image
+from utils.io import h5_to_numpy 
 
 
 class FileLoader(PipelineStep):

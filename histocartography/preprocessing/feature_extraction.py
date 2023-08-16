@@ -17,7 +17,7 @@ import torchvision
 from histocartography.preprocessing.tissue_mask import GaussianTissueMask
 from histocartography.utils import dynamic_import_from
 from scipy.stats import skew
-from skimage.feature import greycomatrix, greycoprops
+from skimage.feature import graycomatrix, graycoprops
 from skimage.filters.rank import entropy as Entropy
 from skimage.measure import regionprops
 from skimage.morphology import disk
@@ -27,7 +27,7 @@ from torch.utils.data import DataLoader, Dataset
 from torchvision import transforms
 from tqdm.auto import tqdm
 
-from ..pipeline import PipelineStep
+from pipeline import PipelineStep
 
 
 class FeatureExtractor(PipelineStep):

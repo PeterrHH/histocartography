@@ -15,8 +15,8 @@ from dgl.data.utils import load_graphs, save_graphs
 from skimage.measure import regionprops
 from sklearn.neighbors import kneighbors_graph
 
-from ..pipeline import PipelineStep
-from .utils import fast_histogram
+from pipeline import PipelineStep
+from preprocessing.utils import fast_histogram
 
 
 LABEL = "label"
