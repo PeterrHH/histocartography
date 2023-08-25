@@ -374,7 +374,6 @@ class KNNGraphBuilder(BaseGraphBuilder):
             graph: dgl.DGLGraph
     ) -> None:
         """Build topology using (thresholded) kNN"""
-
         # build kNN adjacency
         adj = kneighbors_graph(
             centroids,
