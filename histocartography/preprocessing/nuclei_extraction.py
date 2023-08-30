@@ -155,17 +155,23 @@ class NucleiExtractor(PipelineStep):
 
         # post process instance map
         instance_map = process_instance(pred_map)
-
+        print(f"---------------Nuclei Extraction---------------")
+        print(f"Instance map {instance_map.shape}")
         # extract the centroid location in the instance map
         regions = regionprops(instance_map)
+        print(f"and length region {len(regions)}")
         instance_centroids = np.empty((len(regions), 2))
+
+        print(f"Instance centroids have shape {instance_centroids.shape}  shape instance: {instance_map.shape}")
+
         for i, region in enumerate(regions):
             center_y, center_x = region.centroid  # row, col
+            print(f"     centroid r,c {(center_y,center_x)}")
             center_x = int(round(center_x))
             center_y = int(round(center_y))
             instance_centroids[i, 0] = center_x
             instance_centroids[i, 1] = center_y
-
+        print(f"---------------Nuclei Extraction---------------")
         return instance_map, instance_centroids
 
     def precompute(
