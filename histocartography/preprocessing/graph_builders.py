@@ -22,6 +22,7 @@ from preprocessing.utils import fast_histogram
 LABEL = "label"
 CENTROID = "centroid"
 FEATURES = "feat"
+POSITION = "position"
 
 
 def two_hop_neighborhood(graph: dgl.DGLGraph) -> dgl.DGLGraph:
@@ -197,10 +198,11 @@ class BaseGraphBuilder(PipelineStep):
         ):
             # compute normalized centroid features
             centroids = graph.ndata[CENTROID]
-
             normalized_centroids = torch.empty_like(centroids)  # (x, y)
             normalized_centroids[:, 0] = centroids[:, 0] / image_size[0]
             normalized_centroids[:, 1] = centroids[:, 1] / image_size[1]
+            
+
 
             if features.ndim == 3:
                 normalized_centroids = normalized_centroids \
@@ -389,3 +391,40 @@ class KNNGraphBuilder(BaseGraphBuilder):
 
         edge_list = np.nonzero(adj)
         graph.add_edges(list(edge_list[0]), list(edge_list[1]))
+        distaince_info = self.build_position(instance_map,graph)
+        graph.ndata[POSITION] = distaince_info
+
+    def build_position(self,
+                        instance_map: np.ndarray,
+                        graph: dgl.DGLGraph):
+        image_size = (instance_map.shape[1], instance_map.shape[0])  # (x, y)
+        centroids = graph.ndata[CENTROID]
+        """
+        create a distance_info: [norm_x_cent,norm_y_cent,norm_x_mean_dist,norm_y_mean_dist]
+        dist is the distance to other nodes it has connection to 
+        """
+        normalized_centroids = torch.empty_like(centroids)  # (x, y)
+        normalized_centroids[:, 0] = centroids[:, 0] / image_size[0]
+        normalized_centroids[:, 1] = centroids[:, 1] / image_size[1]
+        list_node = graph.nodes()
+        distance_info = torch.zeros((graph.num_nodes(), 4))
+        distance_info[:,0] = normalized_centroids[:, 0]
+        distance_info[:,1] = normalized_centroids[:, 1]
+        average_distances = torch.zeros((graph.num_nodes(), 2))
+        for node in list_node:
+
+            neighbors = graph.successors(node)
+
+            node_centroid = graph.ndata[CENTROID][node]
+            neighbor_centroids = graph.ndata[CENTROID][neighbors]
+            distances = neighbor_centroids - node_centroid
+
+            #Calculate the average distances with Min Max Normalisation
+            average_distances[node, 0] = distances[:, 0].abs().mean()  # Average x distance
+            average_distances[node, 1] = distances[:, 1].abs().mean()  # Average y distance
+        min_distance = average_distances.min(dim=0)[0]  # Minimum distance for x and y
+        max_distance = average_distances.max(dim=0)[0]  # Maximum distance for x and y
+        normalized_distances = (average_distances - min_distance) / (max_distance - min_distance)   
+        distance_info[:,2] = normalized_distances[:,0] # normalized distance of x
+        distance_info[:,3] = normalized_distances[:,1]
+        return distance_info

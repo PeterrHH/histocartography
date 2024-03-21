@@ -77,7 +77,7 @@ class NucleiExtractor(PipelineStep):
                 os.path.dirname(__file__),
                 CHECKPOINT_PATH,
                 pretrained_data + ".pt")
-            download_box_link(DATASET_TO_BOX_URL[pretrained_data], model_path)
+            # download_box_link(DATASET_TO_BOX_URL[pretrained_data], model_path)
 
         self._load_model_from_path(model_path)
         self.model = self.model.to(self.device)
@@ -85,6 +85,7 @@ class NucleiExtractor(PipelineStep):
 
     def _load_model_from_path(self, model_path):
         """Load nuclei extraction model from provided model path."""
+        print(f"model_path is {model_path}")
         self.model = torch.load(model_path)
 
     def _process(  # type: ignore[override]
